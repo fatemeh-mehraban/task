@@ -47,6 +47,13 @@ export function saveLocal(e) {
   }
   setLocal()
   closeModal()
+  fetch('http://localhost:3000',{
+    method: 'POST',
+    headers:{
+      "Content-type":"application/json"
+    },
+    body:JSON.stringify(info)
+  }).then(res => console.log(res))
 }
 
 export function AddTaskTable() {
