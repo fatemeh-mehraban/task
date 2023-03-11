@@ -2,6 +2,7 @@
 // import { render } from "@/Main/render";
 import {render, replaceEdit} from '@/Main'
 const form = document.getElementsByName('llll');
+const BASE_URL ='http://localhost:3000'
 export let infoArr = getLocal()
 export const updateinfoarr = (newarr)=>{
   infoArr = newarr
@@ -31,8 +32,11 @@ export function saveLocal(e) {
   if (!form[0][0].value) return
   if (isEdit) {
     replaceEdit()
-    render(infoArr)
-
+    setTimeout(()=>{
+      const data = getInfo()
+      data.then(res=>render(res))
+    },1000)
+ 
   }else{
     info = {
       taskName: form[0][0].value,
@@ -42,29 +46,28 @@ export function saveLocal(e) {
       message:form[0][4].value,
     };
     infoArr.push(info);
-    render(infoArr)
     postInfo(info)
+    render(infoArr)
     console.log(info);
   }
-
-
- 
-  setLocal()
   closeModal()
 }
 async function postInfo(info) {
-  await fetch('http://localhost:3000/task',{
+
+  await fetch("http://localhost:3000/task", {
     method: 'POST',
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify(info)
-  })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(info),
+    });
 }
 
-export function AddTaskTable() {
-
-
+export async function getInfo() {
+try {
+  const res = await fetch("http://localhost:3000/task");
+  return await res.json()
+} catch (error) {
+  console.log(error);
+}
 }
 
 

@@ -1,4 +1,4 @@
-import { infoArr, updateinfoarr, setLocal, form,changeIsEdit } from '@/Main';
+import { infoArr, updateinfoarr, setLocal, form,changeIsEdit,getInfo } from '@/Main';
 let activID =""
 
 export function render(infoArr) {
@@ -34,10 +34,15 @@ tbody.innerHTML=''
   });
 }
 
-function DeletTask(ID) {
-    const filter = infoArr.filter((item) => item.id !== +ID)
-    updateinfoarr(filter)
-    render(filter);
+async function DeletTask(ID) {
+try {
+  await fetch(`http://localhost:3000/task/${ID}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    });
+} catch (error) {
+  console.log(error);
+}
 }
 
 function editTask(ID){
@@ -60,18 +65,26 @@ function editTask(ID){
    activID = ID
   }
 
- export function replaceEdit() {
+ export async function replaceEdit() {
     const form = document.querySelector("#form1")
-    infoArr.forEach((item)=>{
-      if (item.id === +activID) {
-        item.taskName=form.task.value
-        item.priority=form.pri.value
-        item.status=form.status.value
-        item.deadline=form.date.value
-        item.message=form.text.value
+   const newInfo = {
+        taskName:form.task.value,
+        priority:form.pri.value,
+        status:form.status.value,
+        deadline:form.date.value,
+        message:form.text.value
 
       }
-    })
+      try {
+        await fetch(`http://localhost:3000/task/${activID}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body:JSON.stringify(newInfo)
+          });
+      } catch (error) {
+        console.log(error);
+      }
+ 
     changeIsEdit()
     // form.submit.innerHTML="save"
   }
@@ -80,6 +93,8 @@ export function handleTbl(e) {
  if (e.target.id === "delete") {
     const ID = e.target.dataset.id;
     DeletTask(ID)
+    const data = getInfo()
+  data.then(res=>render(res))
  }
 if(e.target.id === "edit"){
     const ID = e.target.dataset.id;
