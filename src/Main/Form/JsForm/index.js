@@ -45,8 +45,7 @@ export function saveLocal(e) {
     infoArr.push(info);
     render(infoArr)
   }
-  setLocal()
-  closeModal()
+
   fetch('http://localhost:3000',{
     method: 'POST',
     headers:{
@@ -54,6 +53,8 @@ export function saveLocal(e) {
     },
     body:JSON.stringify(info)
   }).then(res => console.log(res))
+  setLocal()
+  closeModal()
 }
 
 export function AddTaskTable() {
