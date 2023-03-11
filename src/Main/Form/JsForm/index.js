@@ -3,18 +3,18 @@
 import {render, replaceEdit} from '@/Main'
 const form = document.getElementsByName('llll');
 const BASE_URL ='http://localhost:3000'
-export let infoArr = getLocal()
+
+
+export let infoArr =[]
 export const updateinfoarr = (newarr)=>{
   infoArr = newarr
-  console.log(newarr);
-  localStorage.setItem('item',JSON.stringify(infoArr))
+  // localStorage.setItem('item',JSON.stringify(infoArr))
 }
 export let isEdit = false
 export const changeIsEdit= ()=>{
   isEdit = !isEdit
 }
 export let info = {};
-
 export function closeModal() {
   document.querySelector("#modal").classList.add("hidden")
   console.log(form);
@@ -48,7 +48,6 @@ export function saveLocal(e) {
     infoArr.push(info);
     postInfo(info)
     render(infoArr)
-    console.log(info);
   }
   closeModal()
 }
@@ -68,17 +67,6 @@ try {
 } catch (error) {
   console.log(error);
 }
-}
-
-
-
-
-
-export function setLocal() {
-  localStorage.setItem('item', JSON.stringify(infoArr));
-}
-function getLocal() {
-   return JSON.parse(localStorage.getItem('item')) || [];
 }
 
 export function drop(e) {

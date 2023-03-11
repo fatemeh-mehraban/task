@@ -1,4 +1,4 @@
-import { infoArr, updateinfoarr, setLocal, form,changeIsEdit,getInfo } from '@/Main';
+import { infoArr,changeIsEdit,getInfo } from '@/Main';
 let activID =""
 
 export function render(infoArr) {
@@ -62,7 +62,7 @@ function editTask(ID){
     });
 //    form.submit.innerHTML="edit"
    changeIsEdit()
-   activID = ID
+   activID = +ID
   }
 
  export async function replaceEdit() {
@@ -95,6 +95,7 @@ export function handleTbl(e) {
     DeletTask(ID)
     const data = getInfo()
   data.then(res=>render(res))
+
  }
 if(e.target.id === "edit"){
     const ID = e.target.dataset.id;
