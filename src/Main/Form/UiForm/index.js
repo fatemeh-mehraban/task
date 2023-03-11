@@ -13,6 +13,7 @@ export const form = () => {
         {
         event:"submit",
         callback:saveLocal,
+
       }
     ],
 

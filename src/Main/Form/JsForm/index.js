@@ -35,7 +35,6 @@ export function saveLocal(e) {
 
   }else{
     info = {
-      id: Date.now(),
       taskName: form[0][0].value,
       priority: form[0][1].value,
       status: form[0][2].value,
@@ -44,17 +43,23 @@ export function saveLocal(e) {
     };
     infoArr.push(info);
     render(infoArr)
+    postInfo(info)
+    console.log(info);
   }
 
-  fetch('http://localhost:3000',{
-    method: 'POST',
-    headers:{
-      "Content-type":"application/json"
-    },
-    body:JSON.stringify(info)
-  }).then(res => console.log(res))
+
+ 
   setLocal()
   closeModal()
+}
+async function postInfo(info) {
+  await fetch('http://localhost:3000/task',{
+    method: 'POST',
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify(info)
+  })
 }
 
 export function AddTaskTable() {
