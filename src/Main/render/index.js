@@ -1,6 +1,16 @@
-import { infoArr,changeIsEdit,getInfo } from '@/Main';
+import { infoArr,changeIsEdit,getInfo, table } from '@/Main';
 let activID =""
+const priority ={
+Low : 'bg-gray-500 rounded-full px-3 py-1',
+Medium : 'bg-yellow-500 rounded-full px-3 py-1',
+Hight : 'bg-red-500 rounded-full px-3 py-1'
+}
 
+const status ={
+  Todo : 'bg-yellow-500 rounded-full px-3 py-1',
+  Doing : 'bg-red-500 rounded-full px-3 py-1',
+  Done : 'bg-green-500 rounded-full px-3 py-1'
+  }
 export function render(infoArr) {
 const tbody = document.getElementById('tbody');
 tbody.innerHTML=''
@@ -12,12 +22,12 @@ tbody.innerHTML=''
       <span>${element.taskName}</span>
     </td>
     
-    <td class="border-collapse border border-black rounded-full px-2 py-1">
-      <span>${element.priority}</span>
+    <td class="border-collapse border border-black py-4">
+      <span class="${priority[element.priority]}">${element.priority}</span>
     </td>
     
     <td class="border-collapse border border-black rounded-full px-2 py-1">
-      <span>${element.status}</span>
+      <span class="${status[element.status]}">${element.status}</span>
     </td>
     
     <td class="border-collapse border border-black">
@@ -25,18 +35,20 @@ tbody.innerHTML=''
     </td>
     
     <td class="border-collapse border border-black">
-      <span class="cursor-pointer" ><ion-icon name="trash-outline" id="delete" data-id="${element.id}"></ion-icon></span>
-      <span class="cursor-pointer"><ion-icon name="create-outline" id="edit" data-id="${element.id}"></ion-icon></span>
-      <span class="cursor-pointer"><ion-icon name="eye-outline" id="view" data-id="${element.id}"></ion-icon></span>
+      <span class="cursor-pointer bg-red-400 py-1 px-3 rounded-md"  ><ion-icon name="trash-outline" id="delete" data-id="${element.id}"></ion-icon></span>
+      <span class="cursor-pointer bg-green-400 py-1 px-3 rounded-md" ><ion-icon name="create-outline" id="edit" data-id="${element.id}"></ion-icon></span>
+      <span class="cursor-pointer bg-red-400 py-1 px-3 rounded-md" ><ion-icon name="eye-outline" id="view" data-id="${element.id}"></ion-icon></span>
     </td>
     
-    </tr>`;
+    </tr>
+    `;
   });
-}
 
-async function DeletTask(ID) {
+}
+infoArr.then(res=>render(res))
+async function DeletTask(id) {
 try {
-  await fetch(`http://localhost:3000/task/${ID}`, {
+  await fetch(`http://localhost:3000/task/${id}`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
     });
@@ -45,12 +57,10 @@ try {
 }
 }
 
-function editTask(ID){
-    // const ID = e.target.dataset.id;
+export function editTask(ID){
     const form = document.querySelector("#form1")
-    infoArr.forEach(item => {
-        console.log(ID,item.id);
-        
+    const data = getInfo()
+    data.then(res=> res.map(item => {  
       if(item.id === +ID){
         console.log( item.taskName);
         form.task.value = item.taskName
@@ -59,8 +69,7 @@ function editTask(ID){
         form.date.value = item.deadline
         form.text.value =item.message
       }
-    });
-//    form.submit.innerHTML="edit"
+      }));
    changeIsEdit()
    activID = +ID
   }
@@ -76,11 +85,13 @@ function editTask(ID){
 
       }
       try {
-        await fetch(`http://localhost:3000/task/${activID}`, {
+       const test = await fetch(`http://localhost:3000/task/${activID}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body:JSON.stringify(newInfo)
-          });
+          
+        });
+        return test
       } catch (error) {
         console.log(error);
       }
@@ -90,12 +101,18 @@ function editTask(ID){
   }
 
 export function handleTbl(e) {
+//  if (e.target.id === "delete") {
+//     const ID = e.target.dataset.id;
+//     let data = getInfo()
+//    data.then(res=>render(res))
+//     DeletTask(ID)
+//  }
+let data = getInfo()
  if (e.target.id === "delete") {
     const ID = e.target.dataset.id;
     DeletTask(ID)
-    const data = getInfo()
-  data.then(res=>render(res))
-
+   data = data.then(res=> {return res.filter(item=>item.id !== activID)})
+    data.then(res=>render(res))
  }
 if(e.target.id === "edit"){
     const ID = e.target.dataset.id;
@@ -111,11 +128,10 @@ if(e.target.id === "view"){
     const boxmodal = document.querySelector("#modal")
     const form = document.querySelector("#form1")
     const ID = e.target.dataset.id;
-    infoArr.forEach(item => {
-        console.log(ID,item.id);
+    const data = getInfo()
+    data.then(res=>{res.map(item => {
         
       if(item.id === +ID){
-        console.log( item.taskName);
         form.task.value = item.taskName
         form.pri.value=item.priority
         form.status.value = item.status
@@ -123,6 +139,7 @@ if(e.target.id === "view"){
         form.text.value =item.message
       }
     });
+    }) 
 
         
     boxmodal.classList.remove("hidden")
@@ -132,11 +149,7 @@ if(e.target.id === "view"){
 
     form.input.setAttribute("readonly",'')
     form.input.classList.remove("focus:border-purple-600")
-
-    form.text.setAttribute.readonly= true
-   form.date.setAttribute.readonly= true
-
-  
-    console.log(2);
+    form.task.setAttribute("readonly",'')
+    form.status.setAttribute("readonly",'')
 }
 }

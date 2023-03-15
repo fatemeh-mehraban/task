@@ -5,7 +5,7 @@ const form = document.getElementsByName('llll');
 const BASE_URL ='http://localhost:3000'
 
 
-export let infoArr =[]
+export let infoArr = getInfo()
 export const updateinfoarr = (newarr)=>{
   infoArr = newarr
   // localStorage.setItem('item',JSON.stringify(infoArr))
@@ -31,11 +31,11 @@ export function saveLocal(e) {
   e.preventDefault();
   if (!form[0][0].value) return
   if (isEdit) {
-    replaceEdit()
-    setTimeout(()=>{
+    replaceEdit().then(()=>{
       const data = getInfo()
       data.then(res=>render(res))
-    },1000)
+    })
+
  
   }else{
     info = {
@@ -45,9 +45,10 @@ export function saveLocal(e) {
       deadline: form[0][3].value,
       message:form[0][4].value,
     };
-    infoArr.push(info);
+    getInfo().then(res=>{res.push(info)
+      render(res)
+    });
     postInfo(info)
-    render(infoArr)
   }
   closeModal()
 }

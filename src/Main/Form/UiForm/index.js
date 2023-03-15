@@ -73,8 +73,9 @@ export const form = () => {
                   id: 'pri',
                   element: 'input',
                   type:'text',
-                  className: 'w-full outline-none h-full px-2',
+                  className: 'w-full outline-none h-full px-2 border-0',
                   child: '',
+                  value:"priority"
                 }),
                 // ******************ul*******
                 El({
@@ -91,6 +92,7 @@ export const form = () => {
                       className:
                         'active:bg-purple-100  hover:bg-gray-100 w-full p-2',
                       child: 'priority',
+                      selected:''
                     }),
 
                     El({
@@ -141,8 +143,9 @@ export const form = () => {
                   id:'status',
                   element: 'input',
                   type:'text',
-                  className: 'w-full outline-none h-full px-2',
+                  className: 'w-full outline-none h-full px-2 border-0',
                   child: '',
+                  value:'status'
                 }),
                 // ******************ul*******
                 El({
@@ -161,6 +164,7 @@ export const form = () => {
                       className:
                         'active:bg-purple-100 hover:bg-gray-100 w-full p-2',
                       child: 'Status',
+                      selected:"selected"
                     }),
 
                     El({
